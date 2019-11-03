@@ -1,0 +1,33 @@
+mkdir -p /usr/gocode/fabric/scripts/fabric-samples/chaincode/fabcat/go
+vi /usr/gocode/fabric/scripts/fabric-samples/chaincode/fabcat/go/fabcat.go
+:%s/car/cat/g
+:%s/Car/Cat/g
+
+mkdir /usr/gocode/fabric/scripts/fabric-samples/fabcat
+cp -a /usr/gocode/fabric/scripts/fabric-samples/fabcar/startFabric.sh /usr/gocode/fabric/scripts/fabric-samples/fabcat
+cp -a /usr/gocode/fabric/scripts/fabric-samples/fabcar/javascript /usr/gocode/fabric/scripts/fabric-samples/fabcat
+
+vi /usr/gocode/fabric/scripts/fabric-samples/fabcat/startFabric.sh
+:%s/-n fabcar/-n fabcat_v4/g  | 更换版本 (:%s/-n fabcat_v4/-n fabcat_v5/g)
+:%s/fabcar/fabcat/g
+
+cd /usr/gocode/fabric/scripts/fabric-samples/fabcat/javascript/
+vi query.js
+const contract = network.getContract('fabcat_v4'); | 更换版本'fabcat_v5'
+const result = await contract.evaluateTransaction('queryAllCats');
+
+nvm use v8.9.0
+npm install
+
+cd /usr/gocode/fabric/scripts/fabric-samples/fabcat
+sh startFabric.sh
+
+cd /usr/gocode/fabric/scripts/fabric-samples/fabcat/javascript/
+sh all.sh | rm -rf wallet node enrollAdmin.js node registerUser.js
+node query.js
+
+// cd /usr/gocode/fabric/scripts/fabric-samples/first-network/
+// sh byfn.sh down
+// sh byfn.sh up
+// docker rmi -f dev-peer0.org1.example.com-fabcat_v9-1.0...
+// Error: could not assemble transaction, err proposal response was not successful, error code 500 -- 链码错误
